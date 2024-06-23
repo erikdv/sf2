@@ -1,0 +1,8 @@
+POST http://localhost:8090/api/message
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "title": "test2",
+  "content": "test content"
+}

@@ -1,0 +1,11 @@
+POST http://localhost:8090/api/auth
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "admin1"
+}
+
+> {%
+    client.global.set("accessToken", response.body.accessToken);
+%}

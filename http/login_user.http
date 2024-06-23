@@ -1,0 +1,13 @@
+POST http://localhost:8090/api/auth
+Content-Type: application/json
+
+{
+  "username": "erik1",
+  "password": "test123"
+}
+
+> {%
+    client.global.set("accessToken", response.body.accessToken);
+    client.global.set("refreshToken", response.body.refreshToken);
+
+%}

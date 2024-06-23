@@ -1,0 +1,10 @@
+services:
+  postgres:
+    image: postgres:15.5
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=sf2
+    ports:
+      - '5439:5432'
