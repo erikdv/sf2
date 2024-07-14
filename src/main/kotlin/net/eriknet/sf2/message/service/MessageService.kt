@@ -4,7 +4,7 @@ import net.eriknet.sf2.message.controller.NewMessageRequest
 import net.eriknet.sf2.message.model.Message
 import net.eriknet.sf2.message.repository.MessageRepository
 import org.springframework.stereotype.Service
-import java.time.LocalDateTime
+import java.time.Instant
 
 @Service
 class MessageService(
@@ -22,6 +22,7 @@ class MessageService(
         Message(
             title = this.title,
             content = this.content,
-            author = author
+            author = author,
+            createdAt = Instant.now()
         )
 }

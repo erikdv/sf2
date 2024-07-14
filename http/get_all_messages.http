@@ -1,2 +1,2 @@
-GET http://localhost:8090/api/message
+GET http://localhost:8090/api/messages
 Authorization: Bearer {{accessToken}}

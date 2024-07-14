@@ -26,7 +26,9 @@ class MessageController(
     fun Message.toResponse(): MessageResponse =
         MessageResponse(
             title = this.title,
-            content = this.content
+            content = this.content,
+            author = this.author,
+            createdAt = this.createdAt
         )
 
 }
