@@ -2,6 +2,9 @@ package net.eriknet.sf2.account.controller
 
 import net.eriknet.sf2.account.model.Account
 import net.eriknet.sf2.account.service.AccountService
+import net.eriknet.sf2.security.controller.AuthenticationRequest
+import net.eriknet.sf2.security.controller.AuthenticationResponse
+import net.eriknet.sf2.security.service.AuthenticationService
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
@@ -14,15 +17,23 @@ import org.springframework.web.server.ResponseStatusException
 @RestController
 @RequestMapping("/api/account")
 class AccountController(
-    private val accountService: AccountService
+    private val accountService: AccountService,
+    private val authenticationService: AuthenticationService
 ) {
 
     @PostMapping
-    fun create(@RequestBody accountRequest: AccountRequest) {
+    fun create(@RequestBody accountRequest: AccountRequest): AuthenticationResponse {
+
         accountService.createAccount(
             account = accountRequest.toModel()
-        ) ?.toResponse()
-            ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot create a user")
+        ) ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot create the user")
+
+        return authenticationService.authenticate(
+            AuthenticationRequest(
+                username = accountRequest.username,
+                password = accountRequest.password
+            )
+        )
     }
 
     @PreAuthorize("hasRole('ADMIN')")
