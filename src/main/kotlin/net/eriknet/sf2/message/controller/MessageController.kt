@@ -2,6 +2,7 @@ package net.eriknet.sf2.message.controller
 
 import net.eriknet.sf2.message.model.Message
 import net.eriknet.sf2.message.service.MessageService
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -17,8 +18,10 @@ class MessageController(
             .map { it.toResponse() }
 
     @PostMapping("/api/message")
-    fun post(@RequestBody request: NewMessageRequest)=
-        messageService.save(request.toMessage())
+    fun post(@RequestBody request: NewMessageRequest) {
+        val user = SecurityContextHolder.getContext().getAuthentication().name
+        messageService.save(request, user)
+    }
 
     fun Message.toResponse(): MessageResponse =
         MessageResponse(
@@ -26,9 +29,4 @@ class MessageController(
             content = this.content
         )
 
-    fun NewMessageRequest.toMessage(): Message =
-        Message(
-            title = this.title,
-            content = this.content
-        )
 }
