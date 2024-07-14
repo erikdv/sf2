@@ -21,7 +21,6 @@ class AuthenticationController(
     private val authenticationService: AuthenticationService
 ) {
 
-    @CrossOrigin("http://localhost:3000")
     @PostMapping
     fun authenticate(@RequestBody authRequest: AuthenticationRequest) : AuthenticationResponse =
             authenticationService.authenticate(authRequest)
@@ -35,7 +34,6 @@ class AuthenticationController(
         return ResponseEntity.status(status).body(errorResponse)
     }
 
-    @CrossOrigin("http://localhost:3000")
     @PostMapping("/refresh")
     fun refreshAccessToken(@RequestBody request: RefreshTokenRequest): TokenResponse =
         authenticationService.refreshAccessToken(request.refreshToken)
