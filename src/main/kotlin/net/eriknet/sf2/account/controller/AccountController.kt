@@ -1,5 +1,6 @@
 package net.eriknet.sf2.account.controller
 
+import jakarta.servlet.http.HttpServletResponse
 import net.eriknet.sf2.account.model.Account
 import net.eriknet.sf2.account.service.AccountService
 import net.eriknet.sf2.security.controller.AuthenticationRequest
@@ -18,22 +19,30 @@ import org.springframework.web.server.ResponseStatusException
 @RequestMapping("/api/account")
 class AccountController(
     private val accountService: AccountService,
-    private val authenticationService: AuthenticationService
+    private val authService: AuthenticationService
 ) {
 
     @PostMapping
-    fun create(@RequestBody accountRequest: AccountRequest): AuthenticationResponse {
+    fun create(
+        @RequestBody accountRequest: AccountRequest,
+        response: HttpServletResponse
+    ): AuthenticationResponse {
 
         accountService.createAccount(
             account = accountRequest.toModel()
         ) ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot create the user")
 
-        return authenticationService.authenticate(
+        val authContainer =  authService.authenticate(
             AuthenticationRequest(
                 username = accountRequest.username,
                 password = accountRequest.password
             )
         )
+
+        response.addCookie(authService.getAccessTokenCookie(authContainer))
+        response.addCookie(authService.getRefreshTokenCookie(authContainer))
+
+        return AuthenticationResponse(authContainer.username, authContainer.sessionExpirationTime)
     }
 
     @PreAuthorize("hasRole('ADMIN')")

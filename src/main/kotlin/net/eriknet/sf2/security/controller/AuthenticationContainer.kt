@@ -1,6 +1,8 @@
 package net.eriknet.sf2.security.controller
 
-data class AuthenticationResponse(
+data class AuthenticationContainer(
+    val accessToken: String,
+    val refreshToken: String,
     val username: String,
     val sessionExpirationTime: Long
 )

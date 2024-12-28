@@ -1,8 +1,9 @@
 package net.eriknet.sf2.security.service
 
+import jakarta.servlet.http.Cookie
 import net.eriknet.sf2.security.config.JwtProperties
 import net.eriknet.sf2.security.controller.AuthenticationRequest
-import net.eriknet.sf2.security.controller.AuthenticationResponse
+import net.eriknet.sf2.security.controller.AuthenticationContainer
 import net.eriknet.sf2.security.repository.RefreshTokenRepository
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -19,7 +20,7 @@ class AuthenticationService(
     private val jwtProperties: JwtProperties,
     private val refreshTokenRepository: RefreshTokenRepository
 ) {
-    fun authenticate(authenticationRequest: AuthenticationRequest): AuthenticationResponse {
+    fun authenticate(authenticationRequest: AuthenticationRequest): AuthenticationContainer {
         authenticationManager.authenticate(
             UsernamePasswordAuthenticationToken(
                 authenticationRequest.username,
@@ -27,43 +28,64 @@ class AuthenticationService(
             )
         )
         val user = userDetailsService.loadUserByUsername(authenticationRequest.username)
+        val currentTime = System.currentTimeMillis()
 
-        val accessToken = generateAccessToken(user)
+        val accessToken = generateAccessToken(user, currentTime)
 
-        val refreshToken = geenrateRefreshToken(user)
+        val refreshToken = generateRefreshToken(user, currentTime)
 
         refreshTokenRepository.save(refreshToken, user)
 
-        return AuthenticationResponse(
-            accessToken = accessToken,
-            refreshToken = refreshToken
+        return AuthenticationContainer(
+            accessToken,
+            refreshToken,
+            user.username,
+            currentTime + jwtProperties.accessTokenExpiration
         )
     }
 
-    private fun geenrateRefreshToken(user: UserDetails) = tokenService.generate(
+    fun getAccessTokenCookie(authContainer: AuthenticationContainer): Cookie {
+        return Cookie("accessToken", authContainer.accessToken).apply {
+            isHttpOnly = true
+            secure = true
+            path = "/"
+            maxAge = 60 * 60 // 60 minutes
+        }
+    }
+
+    fun getRefreshTokenCookie(authContainer: AuthenticationContainer): Cookie {
+        return Cookie("refreshToken", authContainer.refreshToken).apply {
+            isHttpOnly = true
+            secure = true
+            path = "/"
+            maxAge = 7 * 24 * 60 * 60 // 7 days
+        }
+    }
+
+    private fun generateRefreshToken(user: UserDetails, currentTime: Long) = tokenService.generate(
         userDetails = user,
-        expirationDate = Date(System.currentTimeMillis() + jwtProperties.refreshTokenExpiration)
+        expirationDate = Date(currentTime + jwtProperties.refreshTokenExpiration)
     )
 
-    private fun generateAccessToken(user: UserDetails) = tokenService.generate(
+    private fun generateAccessToken(user: UserDetails, currentTime: Long) = tokenService.generate(
         userDetails = user,
-        expirationDate = Date(System.currentTimeMillis() + jwtProperties.accessTokenExpiration),
+        expirationDate = Date(currentTime + jwtProperties.accessTokenExpiration),
         additionalClaims = mapOf("roles" to user.authorities.map { it.authority }.toList())
     )
 
     fun refreshAccessToken(token: String): String? {
         val extractedUsername = tokenService.extractUsername(token)
+        val currentTime = System.currentTimeMillis()
 
         return extractedUsername?.let { username ->
             val currentUserDetails = userDetailsService.loadUserByUsername(username)
             val refreshTokenUserDetails = refreshTokenRepository.findUserDetailsByToken(token)
 
             if (!tokenService.isExpired(token) && currentUserDetails.username == refreshTokenUserDetails?.username) {
-                generateAccessToken(currentUserDetails)
+                generateAccessToken(currentUserDetails, currentTime)
             } else {
                 null
             }
         }
-
     }
 }
