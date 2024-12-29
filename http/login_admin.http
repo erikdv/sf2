@@ -6,6 +6,4 @@ Content-Type: application/json
   "password": "admin1"
 }
 
-> {%
-    client.global.set("accessToken", response.body.accessToken);
-%}
+> {}
