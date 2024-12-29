@@ -4,6 +4,7 @@ import jakarta.servlet.http.Cookie
 import net.eriknet.sf2.security.config.JwtProperties
 import net.eriknet.sf2.security.controller.AuthenticationRequest
 import net.eriknet.sf2.security.controller.AuthenticationContainer
+import net.eriknet.sf2.security.model.RefreshToken
 import net.eriknet.sf2.security.repository.RefreshTokenRepository
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -34,7 +35,7 @@ class AuthenticationService(
 
         val refreshToken = generateRefreshToken(user, currentTime)
 
-        refreshTokenRepository.save(refreshToken, user)
+        refreshTokenRepository.save(RefreshToken( refreshToken, user.username))
 
         return AuthenticationContainer(
             accessToken,
@@ -49,7 +50,7 @@ class AuthenticationService(
             isHttpOnly = true
             secure = true
             path = "/"
-            maxAge = 60 * 60 // 60 minutes
+            maxAge = 10
         }
     }
 
@@ -79,9 +80,9 @@ class AuthenticationService(
 
         extractedUsername?.let { username ->
             val currentUserDetails = userDetailsService.loadUserByUsername(username)
-            val refreshTokenUserDetails = refreshTokenRepository.findUserDetailsByToken(refreshToken)
+            val refreshTokenUserDetails = refreshTokenRepository.findByRefreshToken(refreshToken)
 
-            if (!tokenService.isExpired(refreshToken) && currentUserDetails.username == refreshTokenUserDetails?.username) {
+            if (!tokenService.isExpired(refreshToken) && currentUserDetails.username == refreshTokenUserDetails.username) {
                 val accessToken = generateAccessToken(currentUserDetails, currentTime)
                 return AuthenticationContainer(
                     accessToken,

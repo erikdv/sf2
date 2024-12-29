@@ -1,18 +1,12 @@
 package net.eriknet.sf2.security.repository
 
-import org.springframework.security.core.userdetails.UserDetails
+import net.eriknet.sf2.security.model.RefreshToken
+import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-class RefreshTokenRepository {
+interface RefreshTokenRepository : CrudRepository<RefreshToken, Long> {
 
-    private val tokens = mutableMapOf<String, UserDetails>()
-
-    fun findUserDetailsByToken(token: String): UserDetails? =
-        tokens[token]
-
-    fun save(token: String, userDetails: UserDetails) {
-        tokens[token] = userDetails
-    }
-
+    fun findByRefreshToken(token: String): RefreshToken
+    fun save(refreshToken: RefreshToken)
 }
