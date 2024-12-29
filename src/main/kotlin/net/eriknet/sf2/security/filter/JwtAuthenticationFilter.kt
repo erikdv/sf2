@@ -17,6 +17,7 @@ class JwtAuthenticationFilter(
     private val userDetailsService: UserDetailsService,
     private val tokenService: TokenService
 ) : OncePerRequestFilter() {
+
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
@@ -30,17 +31,22 @@ class JwtAuthenticationFilter(
             return
         }
 
-        val username = tokenService.extractUsername(jwtToken)
+        runCatching {  tokenService.extractUsername(jwtToken)}
+            .onFailure {
+                filterChain.doFilter(request, response)
+                return
+            }.onSuccess { username ->
 
-        if (username != null && SecurityContextHolder.getContext().authentication == null) {
-            val foundUser = userDetailsService.loadUserByUsername(username)
+                if (username != null && SecurityContextHolder.getContext().authentication == null) {
+                    val foundUser = userDetailsService.loadUserByUsername(username)
 
-            if (tokenService.isValid(jwtToken, foundUser)) {
-                updateContext(foundUser, request)
+                    if (tokenService.isValid(jwtToken, foundUser)) {
+                        updateContext(foundUser, request)
+                    }
+
+                    filterChain.doFilter(request, response)
+                }
             }
-
-            filterChain.doFilter(request, response)
-        }
     }
 
     private fun extractTokenFromCookies(request: HttpServletRequest): String? {

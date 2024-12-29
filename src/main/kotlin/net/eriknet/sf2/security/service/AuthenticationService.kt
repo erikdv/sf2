@@ -73,19 +73,24 @@ class AuthenticationService(
         additionalClaims = mapOf("roles" to user.authorities.map { it.authority }.toList())
     )
 
-    fun refreshAccessToken(token: String): String? {
-        val extractedUsername = tokenService.extractUsername(token)
+    fun refreshAccessToken(refreshToken: String): AuthenticationContainer {
+        val extractedUsername = tokenService.extractUsername(refreshToken)
         val currentTime = System.currentTimeMillis()
 
-        return extractedUsername?.let { username ->
+        extractedUsername?.let { username ->
             val currentUserDetails = userDetailsService.loadUserByUsername(username)
-            val refreshTokenUserDetails = refreshTokenRepository.findUserDetailsByToken(token)
+            val refreshTokenUserDetails = refreshTokenRepository.findUserDetailsByToken(refreshToken)
 
-            if (!tokenService.isExpired(token) && currentUserDetails.username == refreshTokenUserDetails?.username) {
-                generateAccessToken(currentUserDetails, currentTime)
-            } else {
-                null
+            if (!tokenService.isExpired(refreshToken) && currentUserDetails.username == refreshTokenUserDetails?.username) {
+                val accessToken = generateAccessToken(currentUserDetails, currentTime)
+                return AuthenticationContainer(
+                    accessToken,
+                    refreshToken,
+                    username,
+                    currentTime + jwtProperties.accessTokenExpiration
+                )
             }
         }
+        throw RuntimeException()
     }
 }

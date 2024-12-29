@@ -1,6 +1,7 @@
 package net.eriknet.sf2.security.controller
 
 import io.jsonwebtoken.MalformedJwtException
+import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import net.eriknet.sf2.security.service.AuthenticationService
 import org.springframework.http.HttpStatus
@@ -45,10 +46,23 @@ class AuthenticationController(
     }
 
     @PostMapping("/refresh")
-    fun refreshAccessToken(@RequestBody request: RefreshTokenRequest): TokenResponse =
-        authService.refreshAccessToken(request.refreshToken)
-        ?.mapToTokenResponse()
-            ?: throw ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid refresh token")
+    fun refreshAccessToken(request: HttpServletRequest, response: HttpServletResponse): AuthenticationResponse? {
+
+        val refreshToken = extractTokenFromCookies(request, "refreshToken") ?: return null
+
+        val authContainer =  authService.refreshAccessToken(refreshToken)
+
+        response.addCookie(authService.getAccessTokenCookie(authContainer))
+        response.addCookie(authService.getRefreshTokenCookie(authContainer))
+
+        return AuthenticationResponse(authContainer.username, authContainer.sessionExpirationTime)
+
+    }
+
+    private fun extractTokenFromCookies(request: HttpServletRequest, cookieKey: String): String? {
+        val cookies = request.cookies ?: return null
+        return cookies.find { it.name == cookieKey }?.value
+    }
 
     @ExceptionHandler(MalformedJwtException::class)
     fun handleMalformedJwt(ex: MalformedJwtException, request: WebRequest): ResponseEntity<ErrorResponse> {
