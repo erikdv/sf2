@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import java.time.Instant
 
 
 @WebMvcTest(MessageController::class)
@@ -31,11 +32,11 @@ class MessageControllerTest {
     @Test
     fun `listAll should return all messages`() {
         // given
-        val messages = listOf( Message(title = "title", content = "content"))
+        val messages = listOf( Message(title = "title", content = "content", author = "test", createdAt = Instant.now()))
         `when`(messageService.findAll()).thenReturn(messages)
 
         // when
-        val result = this.mockMvc.perform(get("/api/message"))
+        val result = this.mockMvc.perform(get("/api/messages"))
 
         // then
         result.andExpect(status().isOk)
