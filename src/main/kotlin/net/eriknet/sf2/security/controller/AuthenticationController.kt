@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.context.request.WebRequest
-import org.springframework.web.server.ResponseStatusException
 
 
 @RestController
@@ -79,8 +78,5 @@ class AuthenticationController(
         )
         return ResponseEntity.status(status).body(errorResponse)
     }
-
-    fun String.mapToTokenResponse(): TokenResponse =
-        TokenResponse(accessToken = this)
 
 }
