@@ -42,7 +42,11 @@ class AccountController(
         response.addCookie(authService.getAccessTokenCookie(authContainer))
         response.addCookie(authService.getRefreshTokenCookie(authContainer))
 
-        return AuthenticationResponse(authContainer.username, authContainer.sessionExpirationTime)
+        return AuthenticationResponse(
+            authContainer.username,
+            authContainer.sessionExpirationTime,
+            authContainer.sessionRefreshExpirationTime
+        )
     }
 
     @PreAuthorize("hasRole('ADMIN')")

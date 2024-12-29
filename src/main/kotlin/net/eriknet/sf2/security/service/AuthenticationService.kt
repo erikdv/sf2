@@ -41,7 +41,8 @@ class AuthenticationService(
             accessToken,
             refreshToken,
             user.username,
-            currentTime + jwtProperties.accessTokenExpiration
+            currentTime + jwtProperties.accessTokenExpiration,
+            currentTime + jwtProperties.refreshTokenExpiration
         )
     }
 
@@ -50,7 +51,7 @@ class AuthenticationService(
             isHttpOnly = true
             secure = true
             path = "/"
-            maxAge = 10
+            maxAge = jwtProperties.refreshTokenExpiration
         }
     }
 
@@ -59,7 +60,7 @@ class AuthenticationService(
             isHttpOnly = true
             secure = true
             path = "/"
-            maxAge = 7 * 24 * 60 * 60 // 7 days
+            maxAge = jwtProperties.refreshTokenExpiration
         }
     }
 
@@ -88,7 +89,8 @@ class AuthenticationService(
                     accessToken,
                     refreshToken,
                     username,
-                    currentTime + jwtProperties.accessTokenExpiration
+                    currentTime + jwtProperties.accessTokenExpiration,
+                    currentTime + jwtProperties.refreshTokenExpiration
                 )
             }
         }

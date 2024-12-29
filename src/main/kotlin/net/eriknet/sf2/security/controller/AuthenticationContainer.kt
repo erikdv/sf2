@@ -4,5 +4,6 @@ data class AuthenticationContainer(
     val accessToken: String,
     val refreshToken: String,
     val username: String,
-    val sessionExpirationTime: Long
+    val sessionExpirationTime: Long,
+    val sessionRefreshExpirationTime: Long
 )

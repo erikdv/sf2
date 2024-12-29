@@ -32,7 +32,11 @@ class AuthenticationController(
         response.addCookie(authService.getAccessTokenCookie(authContainer))
         response.addCookie(authService.getRefreshTokenCookie(authContainer))
 
-        return AuthenticationResponse(authContainer.username, authContainer.sessionExpirationTime)
+        return AuthenticationResponse(
+            authContainer.username,
+            authContainer.sessionExpirationTime,
+            authContainer.sessionRefreshExpirationTime
+        )
     }
 
 
@@ -55,8 +59,11 @@ class AuthenticationController(
         response.addCookie(authService.getAccessTokenCookie(authContainer))
         response.addCookie(authService.getRefreshTokenCookie(authContainer))
 
-        return AuthenticationResponse(authContainer.username, authContainer.sessionExpirationTime)
-
+        return AuthenticationResponse(
+            authContainer.username,
+            authContainer.sessionExpirationTime,
+            authContainer.sessionRefreshExpirationTime
+        )
     }
 
     private fun extractTokenFromCookies(request: HttpServletRequest, cookieKey: String): String? {
