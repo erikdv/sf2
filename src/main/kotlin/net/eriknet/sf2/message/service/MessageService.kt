@@ -23,6 +23,13 @@ class MessageService(
             content = this.content,
             author = author,
             createdAt = Instant.now(),
-            category = this.category
+            category = this.category ?: DEFAULT
         )
+
+    companion object{
+        private val DEFAULT = "default"
+    }
+
 }
+
+

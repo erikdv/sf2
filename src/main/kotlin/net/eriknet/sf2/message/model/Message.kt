@@ -13,7 +13,7 @@ class Message(
     val content: String,
     val author: String,
     val createdAt: Instant,
-    val category: String
+    val category: String?
 ) {
     @Id
     @GeneratedValue(generator = "UUID")
