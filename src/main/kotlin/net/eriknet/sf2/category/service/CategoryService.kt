@@ -13,7 +13,7 @@ class CategoryService(
         repository.findAll()
 
     fun save(request: NewCategoryRequest) {
-        repository.save(Category(request.slug, request.title, request.order.toInt()))
+        repository.save(Category(request.slug, request.title, request.order))
     }
 
 }
