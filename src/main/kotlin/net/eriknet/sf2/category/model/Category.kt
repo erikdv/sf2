@@ -1,22 +1,19 @@
-package net.eriknet.sf2.message.model
+package net.eriknet.sf2.category.model
 
+import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.Id
-import java.time.Instant
 import java.util.*
 
-
 @Entity
-class Message(
+class Category(
+    val slug: String,
     val title: String,
-    val content: String,
-    val author: String,
-    val createdAt: Instant,
-    val category: String
+    @Column(name = "\"order_\"")
+    val order: Int
 ) {
     @Id
     @GeneratedValue(generator = "UUID")
     var uuid: UUID? = null
 }
-

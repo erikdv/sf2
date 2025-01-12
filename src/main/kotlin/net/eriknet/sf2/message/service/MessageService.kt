@@ -14,7 +14,6 @@ class MessageService(
         repository.findAll()
 
     fun save(message: NewMessageRequest, user: String) {
-
         repository.save(message.toMessage(author = user))
     }
 
@@ -23,6 +22,7 @@ class MessageService(
             title = this.title,
             content = this.content,
             author = author,
-            createdAt = Instant.now()
+            createdAt = Instant.now(),
+            category = this.category
         )
 }
