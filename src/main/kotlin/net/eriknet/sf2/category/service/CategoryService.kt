@@ -12,6 +12,9 @@ class CategoryService(
     fun findAll(): List<Category> =
         repository.findAll()
 
+    fun findBySlug(slug: String): Category =
+        repository.findBySlug(slug)
+
     fun save(request: NewCategoryRequest) {
         repository.save(Category(request.slug, request.title, request.order))
     }

@@ -8,4 +8,6 @@ import java.util.*
 @Repository
 interface CategoryRepository: CrudRepository<Category, UUID> {
     override fun findAll(): List<Category>
+
+    fun findBySlug(slug: String): Category
 }

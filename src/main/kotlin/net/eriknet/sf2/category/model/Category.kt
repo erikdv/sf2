@@ -4,6 +4,8 @@ import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.Id
+import jakarta.persistence.ManyToMany
+import net.eriknet.sf2.message.model.Message
 import java.util.*
 
 @Entity
@@ -16,4 +18,7 @@ class Category(
     @Id
     @GeneratedValue(generator = "UUID")
     var uuid: UUID? = null
+
+    @ManyToMany(mappedBy = "categories")
+    val messages: MutableSet<Message> = mutableSetOf()
 }

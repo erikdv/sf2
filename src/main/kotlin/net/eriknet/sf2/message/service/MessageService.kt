@@ -1,5 +1,6 @@
 package net.eriknet.sf2.message.service
 
+import net.eriknet.sf2.category.service.CategoryService
 import net.eriknet.sf2.message.controller.NewMessageRequest
 import net.eriknet.sf2.message.model.Message
 import net.eriknet.sf2.message.repository.MessageRepository
@@ -8,7 +9,8 @@ import java.time.Instant
 
 @Service
 class MessageService(
-    private val repository : MessageRepository
+    private val repository : MessageRepository,
+    private val categoryService: CategoryService
 ) {
     fun findAll(): List<Message> =
         repository.findAll()
@@ -23,7 +25,7 @@ class MessageService(
             content = this.content,
             author = author,
             createdAt = Instant.now(),
-            category = this.category ?: DEFAULT
+            categories = mutableSetOf(categoryService.findBySlug(this.category ?: DEFAULT) )
         )
 
     companion object{

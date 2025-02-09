@@ -1,5 +1,6 @@
 package net.eriknet.sf2.message.controller
 
+import net.eriknet.sf2.category.controller.CategoryResponse
 import net.eriknet.sf2.message.model.Message
 import net.eriknet.sf2.message.service.MessageService
 import org.springframework.security.core.context.SecurityContextHolder
@@ -28,7 +29,10 @@ class MessageController(
             title = this.title,
             content = this.content,
             author = this.author,
-            createdAt = this.createdAt
+            createdAt = this.createdAt,
+            categories = this.categories.map {
+                CategoryResponse(it.slug, it.title, it.order)
+            }.toSet()
         )
 
 }
