@@ -3,5 +3,6 @@ Content-Type: application/json
 
 {
   "title": "test2",
-  "content": "test content"
+  "content": "test content",
+  "category": "materiaal"
 }

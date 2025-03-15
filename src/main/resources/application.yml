@@ -13,10 +13,10 @@ spring:
     password: ${spring.datasource.password}
     baseline-on-migrate: true
     enabled: true
-  jpa:
-    hibernate:
-      ddl-auto:
-        update
+#  jpa:
+#    hibernate:
+#      ddl-auto:
+#        update
 jwt:
   key: ${JWT_KEY}
   access-token-expiration: 300000  # 5 minutes

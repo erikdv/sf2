@@ -2,7 +2,7 @@ POST http://localhost:8090/api/category
 Content-Type: application/json
 
 {
-  "slug": "tech-talk",
-  "title": "Tech Talk",
-  "order": 1
+  "slug": "materiaal",
+  "title": "Materiaal",
+  "order": 4
 }
