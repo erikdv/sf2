@@ -40,7 +40,7 @@ class SecurityConfiguration(
                     .requestMatchers(HttpMethod.POST, "/api/category")
                     .fullyAuthenticated()
                     .requestMatchers(HttpMethod.GET, "/api/category")
-                    .fullyAuthenticated()
+                    .permitAll()
                     .requestMatchers(HttpMethod.POST, "/error")
                     .permitAll()
                     .requestMatchers("/v3/api-docs")

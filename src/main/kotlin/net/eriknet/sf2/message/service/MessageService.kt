@@ -13,6 +13,9 @@ class MessageService(
     fun findAll(): List<Message> =
         repository.findAll()
 
+    fun findByCategory(slug: String): List<Message> =
+        repository.findByCategory(slug)
+
     fun save(message: NewMessageRequest, user: String) {
         repository.save(message.toMessage(author = user))
     }
