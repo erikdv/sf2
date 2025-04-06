@@ -33,6 +33,8 @@ class SecurityConfiguration(
                     .permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/account**")
                     .fullyAuthenticated()
+                    .requestMatchers(HttpMethod.GET, "/api/comments")
+                    .permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/messages")
                     .permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/message")
