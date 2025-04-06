@@ -8,5 +8,6 @@ import java.util.*
 @Repository
 interface MessageRepository : CrudRepository<Message, UUID> {
     override fun findAll(): List<Message>
+    fun findByCategory(slug: String): List<Message>
 
 }
