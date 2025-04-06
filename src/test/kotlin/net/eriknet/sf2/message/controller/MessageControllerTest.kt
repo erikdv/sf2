@@ -32,7 +32,9 @@ class MessageControllerTest {
     @Test
     fun `listAll should return all messages`() {
         // given
-        val messages = listOf( Message(title = "title", content = "content", author = "test", createdAt = Instant.now()))
+        val messages = listOf(
+            Message(title = "title", content = "content", author = "test", createdAt = Instant.now(), category = null)
+        )
         `when`(messageService.findAll()).thenReturn(messages)
 
         // when
