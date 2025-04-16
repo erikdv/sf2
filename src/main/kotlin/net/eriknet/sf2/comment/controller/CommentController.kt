@@ -1,19 +1,22 @@
 package net.eriknet.sf2.comment.controller
 
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
-import java.time.Instant
+import net.eriknet.sf2.comment.service.CommentService
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.web.bind.annotation.*
 
-@RestController()
-class CommentController {
-
+@RestController
+class CommentController(
+    private val commentService: CommentService
+) {
     @GetMapping("/api/comments")
-    fun getComments(@RequestParam messageId: String) : List<CommentResponse> {
-        return listOf(
-            CommentResponse("hi", "erik", Instant.now()),
-            CommentResponse("hi2", "erik", Instant.now()),
-            CommentResponse("hi3", "erik", Instant.now()),
-        )
+    fun getComments(@RequestParam messageId: String): List<CommentResponse> {
+        return commentService.findByMessageId(messageId)
+            .map { CommentResponse(it.content, it.author, it.createdAt) }
+    }
+
+    @PostMapping("/api/comments")
+    fun postComment(@RequestBody request: NewCommentRequest) {
+        val user = SecurityContextHolder.getContext().authentication.name
+        commentService.save(request, user)
     }
 }
