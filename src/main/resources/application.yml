@@ -1,6 +1,10 @@
 server:
   port: 8090
 
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} trace_id=%X{trace_id} span_id=%X{span_id} trace_flags=%X{trace_flags} - %msg%n"
+
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5439/sf2
