@@ -1,0 +1,7 @@
+POST http://localhost:8090/api/comments
+Content-Type: application/json
+
+{
+  "messageId": "80ca5e56-8326-442f-86e7-a1a657406aa7",
+  "content": "Test comment"
+}
