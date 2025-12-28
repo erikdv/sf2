@@ -35,6 +35,8 @@ class SecurityConfiguration(
                     .fullyAuthenticated()
                     .requestMatchers(HttpMethod.GET, "/api/comments")
                     .permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/comments/count")
+                    .permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/comments")
                     .fullyAuthenticated()
                     .requestMatchers(HttpMethod.GET, "/api/messages")

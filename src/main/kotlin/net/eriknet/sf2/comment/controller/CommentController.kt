@@ -14,6 +14,14 @@ class CommentController(
             .map { CommentResponse(it.content, it.author, it.createdAt) }
     }
 
+    @GetMapping("/api/comments/count")
+    fun getCommentCount(@RequestParam messageId: String): CommentCountResponse =
+        CommentCountResponse(
+            messageId,
+            commentService.getCount(messageId),
+        )
+
+
     @PostMapping("/api/comments")
     fun postComment(@RequestBody request: NewCommentRequest) {
         val user = SecurityContextHolder.getContext().authentication.name

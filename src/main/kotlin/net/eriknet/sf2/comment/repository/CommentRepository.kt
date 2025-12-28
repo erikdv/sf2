@@ -8,4 +8,5 @@ import java.util.UUID
 @Repository
 interface CommentRepository : JpaRepository<Comment, UUID> {
     fun findByMessageId(messageId: String): List<Comment>
+    fun countByMessageId(messageId: String): Long
 }

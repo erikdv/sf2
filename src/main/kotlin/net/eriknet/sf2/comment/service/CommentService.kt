@@ -17,6 +17,10 @@ class CommentService(
         repository.save(comment.toComment(author))
     }
 
+    fun getCount(messageId: String): Long =
+        repository.countByMessageId(messageId)
+
+
     private fun NewCommentRequest.toComment(author: String): Comment =
         Comment(
             messageId = this.messageId,
