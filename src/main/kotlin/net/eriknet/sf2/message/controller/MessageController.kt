@@ -33,6 +33,7 @@ class MessageController(
 
     fun Message.toResponse(): MessageResponse =
         MessageResponse(
+            id = this.uuid.toString(),
             title = this.title,
             content = this.content,
             author = this.author,
