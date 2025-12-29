@@ -55,6 +55,9 @@ class SecurityConfiguration(
                     .permitAll()
                     .requestMatchers("/swagger-ui/**")
                     .permitAll()
+                    .requestMatchers("/error")
+                    .permitAll()
+
             }
             .sessionManagement{
                 it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
