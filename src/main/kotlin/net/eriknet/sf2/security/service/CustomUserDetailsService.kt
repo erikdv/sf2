@@ -20,7 +20,7 @@ class CustomUserDetailsService(
         userRepository.findByUsername(username)
             ?.mapToUserDetails()
             ?: run {
-                logger.warn { "User $username not found" }
+                logger.error { "User $username not found" }
                 throw UsernameNotFoundException("Not found")
             }
 
