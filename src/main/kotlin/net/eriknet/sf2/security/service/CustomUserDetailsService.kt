@@ -1,5 +1,6 @@
 package net.eriknet.sf2.security.service
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import net.eriknet.sf2.account.repository.AccountRepository
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
@@ -18,7 +19,10 @@ class CustomUserDetailsService(
     override fun loadUserByUsername(username: String): UserDetails =
         userRepository.findByUsername(username)
             ?.mapToUserDetails()
-            ?: throw UsernameNotFoundException("Not found")
+            ?: run {
+                logger.warn { "User $username not found" }
+                throw UsernameNotFoundException("Not found")
+            }
 
     private fun ApplicationUser.mapToUserDetails(): UserDetails =
         User.builder()
@@ -26,4 +30,8 @@ class CustomUserDetailsService(
             .password(this.password)
             .roles(*(this.roles.map { it.name }.toTypedArray()))
             .build()
+
+    companion object {
+        val logger = KotlinLogging.logger {}
+    }
 }
